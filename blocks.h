@@ -6,7 +6,7 @@ static const Block blocks[] = {
 	{"BRI: ",	"/home/ms/.local/bin/brightness",				0,		11},
 	{"VOL: ",	"/home/ms/.local/bin/volume",					1,		10},
 	{"",		"date '+%a %d.%m  %H:%M'",					5,		0},
-	{"PNG: ",	"ping -c10 -W2 artixlinux.org 2>/dev/null | awk -F'/' '/rtt/{print int($5)\"ms\"}' || echo '---'",	12,	0},
+	{"PNG: ",	"ping -c10 -W2 artixlinux.org 2>/dev/null | awk -F'/' '/rtt/{ms=int($5); if(ms>99) printf \"%c%dms\",3,ms; else printf \"%dms\",ms}' || echo '---'",	12,	0},
 };
 static char delim[] = " | ";
 static unsigned int delimLen = 5;
