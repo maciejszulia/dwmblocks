@@ -7,7 +7,7 @@ static const Block blocks[] = {
 	{"\004CPU \001",	"top -bn1 | awk '/^%Cpu/ { printf \"%.0f%%\", 100-$8 }'",	5,		0},
 	{"\004RAM \001",	"free -h | awk '/^Mem/ { print $3\"/\"$2 }' | sed s/i//g",	10,		0},
 	{"\004GPU \001",	"/home/ms/.local/bin/gpu",					5,		0},
-	{"\004PNG\001",	"ping -c10 -W2 artixlinux.org 2>/dev/null | awk -F'/' '/rtt/{ms=int($5); if(ms>999) ms=999; if(ms>99) printf \" %c%dms%c\",3,ms,1; else printf \" %dms\",ms}' || echo ' ---'",	12,	0},
+	{"\004PNG\001",	"/home/ms/.local/bin/ping-artix",				2,		0},
 	{"\004DSK \001",	"df -h / | awk 'NR==2{print $3\"/\"$2}'",		300,		0},
 	{"\004BRI \001",	"/home/ms/.local/bin/brightness",				0,		11},
 
