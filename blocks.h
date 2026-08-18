@@ -15,7 +15,7 @@ static const Block blocks[] = {
 	{"", NULL, 0, 0},
 
 	/* --- always on the bar --- */
-	{"\004BAT \001",	"cap=$(cat /sys/class/power_supply/BAT0/capacity 2>/dev/null || echo 100); st=$(cat /sys/class/power_supply/BAT0/status 2>/dev/null || echo Charging); if [ \"$cap\" -le 20 ] && [ \"$st\" != \"Charging\" ]; then if [ $(( $(date +%s) % 2 )) -eq 0 ]; then printf \"%c%d%%%c\" 3 \"$cap\" 1; else printf \"%d%%\" \"$cap\"; fi; else printf \"%d%%\" \"$cap\"; fi",	2,	0},
+	{"\004BAT \001",	"cap=$(cat /sys/class/power_supply/BAT0/capacity 2>/dev/null || echo 100); st=$(cat /sys/class/power_supply/BAT0/status 2>/dev/null || echo Charging); if [ \"$cap\" -le 20 ] && [ \"$st\" != \"Charging\" ]; then if [ $(( $(date +%s) % 2 )) -eq 0 ]; then printf \"%c%d%%%c\" 3 \"$cap\" 1; else printf \"%d%%\" \"$cap\"; fi; else printf \"%d%%\" \"$cap\"; fi",	1,	0},
 	{"\004VOL \001",	"/home/ms/.local/bin/volume",					1,		10},
 	{"",	"/home/ms/.local/bin/weather",					1,		12},
 	{"",	"LC_TIME=pl_PL.utf8 date '+%a %d.%m %H:%M'",			1,		0},
