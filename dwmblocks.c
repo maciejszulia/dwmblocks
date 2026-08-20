@@ -27,11 +27,10 @@ typedef struct {
 #ifndef __OpenBSD__
 void dummysighandler(int num);
 #endif
-void sighandler(int num);
 void getcmds(int time);
 void getsigcmds(unsigned int signal);
 void setupsignals();
-void sighandler(int signum);
+void sighandler(int signum, siginfo_t *si, void *ucontext);
 int getstatus(char *str, char *last);
 void statusloop();
 void termhandler(int signum);
@@ -60,28 +59,35 @@ void getcmd(const Block *block, char *output)
 {
 	//make sure status is same until output is ready
 	char tempstatus[CMDLENGTH] = {0};
+	int signalLen = block->signal ? 1 : 0;
 	//a block without a command is the bar split marker, not a process
 	if (!block->command) {
 		strcpy(output, "\037");
 		return;
 	}
-	strcpy(tempstatus, block->icon);
+	if (block->signal)
+		tempstatus[0] = block->signal;
+	strcpy(tempstatus+signalLen, block->icon);
 	FILE *cmdf = popen(block->command, "r");
 	if (!cmdf)
 		return;
-	int i = strlen(block->icon);
-	fgets(tempstatus+i, CMDLENGTH-i-delimLen, cmdf);
+	int i = signalLen + strlen(block->icon);
+	fgets(tempstatus+i, CMDLENGTH-i-delimLen-signalLen, cmdf);
 	i = strlen(tempstatus);
 	//if block and command output are both not empty
-	if (i != 0) {
+	if (i != signalLen) {
 		//only chop off newline if one is present at the end
 		i = tempstatus[i-1] == '\n' ? i-1 : i;
+		if (block->signal)
+			tempstatus[i++] = block->signal;
 		if (delim[0] != '\0') {
 			strncpy(tempstatus+i, delim, delimLen);
 		}
 		else
 			tempstatus[i++] = '\0';
 	}
+	else
+		tempstatus[0] = '\0';
 	strcpy(output, tempstatus);
 	pclose(cmdf);
 }
@@ -108,15 +114,19 @@ void getsigcmds(unsigned int signal)
 
 void setupsignals()
 {
+	struct sigaction sa = { .sa_sigaction = sighandler, .sa_flags = SA_SIGINFO };
+	sigemptyset(&sa.sa_mask);
 #ifndef __OpenBSD__
 	    /* initialize all real time signals with dummy handler */
-    for (int i = SIGRTMIN; i <= SIGRTMAX; i++)
-        signal(i, dummysighandler);
+	for (int i = SIGRTMIN; i <= SIGRTMAX; i++) {
+		signal(i, dummysighandler);
+		sigaddset(&sa.sa_mask, i);
+	}
 #endif
 
 	for (unsigned int i = 0; i < LENGTH(blocks); i++) {
 		if (blocks[i].signal > 0)
-			signal(SIGMINUS+blocks[i].signal, sighandler);
+			sigaction(SIGMINUS+blocks[i].signal, &sa, NULL);
 	}
 
 }
@@ -184,9 +194,16 @@ void dummysighandler(int signum)
 }
 #endif
 
-void sighandler(int signum)
+void sighandler(int signum, siginfo_t *si, void *ucontext)
 {
+	char button[12];
+
+	if (si->si_value.sival_int) {
+		snprintf(button, sizeof(button), "%d", si->si_value.sival_int);
+		setenv("BUTTON", button, 1);
+	}
 	getsigcmds(signum-SIGPLUS);
+	unsetenv("BUTTON");
 	writestatus();
 }
 
