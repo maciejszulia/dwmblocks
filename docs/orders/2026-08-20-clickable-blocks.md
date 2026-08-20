@@ -52,7 +52,8 @@ button number) by the companion order.
 No new dependencies (notify-send/dunst already on the host — verify with command -v
 and report, do not install). Diff surface: dwmblocks.c, blocks.h, blocks.def.h,
 scripts/, docs/orders/ (this file), OMX-REPORT.md. English commits, no
-Co-Authored-By. Ponytail style.
+Co-Authored-By. Ponytail style at lite intensity — deliver the full action list from
+Required outcome; name lazier alternatives in the report instead of cutting scope.
 
 ## Definition of done
 
