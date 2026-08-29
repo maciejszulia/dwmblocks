@@ -9,6 +9,7 @@ static const Block blocks[] = {
 	{"\004PNG\001",	"/home/ms/.local/bin/ping-artix",				2,		0},
 	{"\004DSK \001",	"df -h / | awk 'NR==2{print $3\"/\"$2}'",		300,		0},
 	{"\004BRI \001",	"/home/ms/.local/bin/brightness",				0,		11},
+	{"\004BAT \001",	"case ${BUTTON:-} in 1) p=$(cat /sys/class/power_supply/BAT0/power_now 2>/dev/null || true); [ -n \"$p\" ] && p=$(awk -v p=\"$p\" 'BEGIN { printf \"%.2f W\", p / 1000000 }') || p=n/a; notify-send 'Battery' \"Status: $(cat /sys/class/power_supply/BAT0/status 2>/dev/null || echo unknown)\nCapacity: $(cat /sys/class/power_supply/BAT0/capacity 2>/dev/null || echo unknown)%\nPower draw: $p\" ;; esac; cap=$(cat /sys/class/power_supply/BAT0/capacity 2>/dev/null || echo 100); st=$(cat /sys/class/power_supply/BAT0/status 2>/dev/null || echo Charging); if [ \"$cap\" -le 20 ] && [ \"$st\" != \"Charging\" ]; then if [ $(( $(date +%s) % 2 )) -eq 0 ]; then printf '\\003%d%%\\001' \"$cap\"; else printf \"%d%%\" \"$cap\"; fi; else printf \"%d%%\" \"$cap\"; fi",	1,	8},
 
 	/* ponytail: a block with no command is the \037 marker, i.e. the fold line */
 	{"", NULL, 0, 0},
