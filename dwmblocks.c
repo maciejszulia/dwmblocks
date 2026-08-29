@@ -1,6 +1,8 @@
+#include<errno.h>
 #include<stdlib.h>
 #include<stdio.h>
 #include<string.h>
+#include<time.h>
 #include<unistd.h>
 #include<signal.h>
 #ifndef NO_X
@@ -52,6 +54,8 @@ static void (*writestatus) () = pstdout;
 static char statusbar[LENGTH(blocks)][CMDLENGTH] = {0};
 static char statusstr[2][STATUSLENGTH];
 static int statusContinue = 1;
+/* every real time signal the blocks use; empty where they do not exist */
+static sigset_t rtmask;
 static int returnStatus = 0;
 
 //opens process *cmd and stores output in *output
@@ -115,14 +119,15 @@ void getsigcmds(unsigned int signal)
 void setupsignals()
 {
 	struct sigaction sa = { .sa_sigaction = sighandler, .sa_flags = SA_SIGINFO };
-	sigemptyset(&sa.sa_mask);
+	sigemptyset(&rtmask);
 #ifndef __OpenBSD__
 	    /* initialize all real time signals with dummy handler */
 	for (int i = SIGRTMIN; i <= SIGRTMAX; i++) {
 		signal(i, dummysighandler);
-		sigaddset(&sa.sa_mask, i);
+		sigaddset(&rtmask, i);
 	}
 #endif
+	sa.sa_mask = rtmask;
 
 	for (unsigned int i = 0; i < LENGTH(blocks); i++) {
 		if (blocks[i].signal > 0)
@@ -174,15 +179,24 @@ void pstdout()
 
 void statusloop()
 {
+	struct timespec ts;
+
 	setupsignals();
 	int i = 0;
 	getcmds(-1);
 	while (1) {
+		/* sighandler writes the same buffers, so keep it out of the rebuild */
+		sigprocmask(SIG_BLOCK, &rtmask, NULL);
 		getcmds(i++);
 		writestatus();
+		sigprocmask(SIG_UNBLOCK, &rtmask, NULL);
 		if (!statusContinue)
 			break;
-		sleep(1.0);
+		/* a click must not cut the tick short: i is read as seconds by getcmds */
+		ts.tv_sec = 1;
+		ts.tv_nsec = 0;
+		while (statusContinue && nanosleep(&ts, &ts) == -1 && errno == EINTR)
+			;
 	}
 }
 
