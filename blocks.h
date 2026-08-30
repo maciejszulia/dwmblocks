@@ -21,7 +21,7 @@ static const Block blocks[] = {
 	 * mis-aimed wheel tick does nothing. BRI itself still shifts VOL when it changes
 	 * width; padding both blocks to 4 columns would settle that too. */
 	{"\004BRI \001",	"/home/ms/.local/bin/brightness",				0,		11},
-	{"",	"case ${BUTTON:-} in 1) /home/ms/.local/bin/weather --ack ;; 3) notify-send 'Weather forecast' \"$(/home/ms/.local/bin/weather --facts)\" ;; esac; /home/ms/.local/bin/weather",	1,	12},
+	{"",	"case ${BUTTON:-} in 1) /home/ms/.local/bin/weather --ack ;; 4) /home/ms/.local/bin/weather --turn 1 ;; 5) /home/ms/.local/bin/weather --turn -1 ;; 3) notify-send 'Weather forecast' \"$(/home/ms/.local/bin/weather --facts)\" ;; esac; /home/ms/.local/bin/weather",	1,	12},
 	{"",	"LC_TIME=pl_PL.utf8 date '+%a %d.%m %H:%M'",			1,		0},
 };
 static char delim[] = "  ";
