@@ -15,11 +15,11 @@ static const Block blocks[] = {
 
 	/* --- always on the bar --- */
 	{"\004VPN \001",	"case ${BUTTON:-} in 1) if ip link show mvd >/dev/null 2>&1; then sudo -n wg-quick down mvd; else sudo -n wg-quick up mvd; fi >/dev/null 2>&1 ;; esac; if ip link show mvd >/dev/null 2>&1; then printf '\\005ON\\001'; else echo OFF; fi",	5,	13},
-	{"\004CPU \001",	"/home/ms/.local/bin/cpu",					5,		0},
+	{"\004CPU \001",	"/home/ms/.local/bin/cpu",					5,		14},
 	{"\004VOL \001",	"/home/ms/.local/bin/volume",					1,		10},
-	/* ponytail: BRI sits right of VOL so VOL grows leftwards into CPU (signal 0) and a
-	 * mis-aimed wheel tick does nothing. BRI itself still shifts VOL when it changes
-	 * width; padding both blocks to 4 columns would settle that too. */
+	/* ponytail: BRI sits right of VOL so VOL grows leftwards into CPU; VOL/BRI print 4 columns so a
+	 * mis-aimed wheel tick lands on the same block. CPU (signal 14) steps the fan floor,
+	 * so the padding matters now. */
 	{"\004BRI \001",	"/home/ms/.local/bin/brightness",				0,		11},
 	{"",	"case ${BUTTON:-} in 1) /home/ms/.local/bin/weather --ack ;; 4) /home/ms/.local/bin/weather --turn 1 ;; 5) /home/ms/.local/bin/weather --turn -1 ;; 3) notify-send 'Weather forecast' \"$(/home/ms/.local/bin/weather --facts)\" ;; esac; /home/ms/.local/bin/weather",	1,	12},
 	{"",	"LC_TIME=pl_PL.utf8 date '+%a %d.%m %H:%M'",			1,		0},
