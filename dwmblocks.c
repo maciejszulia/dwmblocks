@@ -192,10 +192,13 @@ void statusloop()
 		sigprocmask(SIG_UNBLOCK, &rtmask, NULL);
 		if (!statusContinue)
 			break;
-		/* a click must not cut the tick short: i is read as seconds by getcmds */
-		ts.tv_sec = 1;
+		/* wake on the next full second, or the clock on the bar skips one every ~14 s
+		 * (1 s of sleep plus the work); a click must not cut the tick short either:
+		 * i is read as seconds by getcmds */
+		clock_gettime(CLOCK_REALTIME, &ts);
+		ts.tv_sec++;
 		ts.tv_nsec = 0;
-		while (statusContinue && nanosleep(&ts, &ts) == -1 && errno == EINTR)
+		while (statusContinue && clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &ts, NULL) == EINTR)
 			;
 	}
 }

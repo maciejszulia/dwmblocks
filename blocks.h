@@ -14,6 +14,10 @@ static const Block blocks[] = {
 	{"", NULL, 0, 0},
 
 	/* --- always on the bar --- */
+	/* ponytail: weather goes first. Its facts differ in length and a block shifts everything to
+	 * its left, so here it moves no block that takes the wheel; CPU, VOL, BRI and the date keep
+	 * their width (11.09: the fan floor and the volume swapped under the pointer). */
+	{"",	"case ${BUTTON:-} in 1) /home/ms/.local/bin/weather --ack ;; 4) /home/ms/.local/bin/weather --turn 1 ;; 5) /home/ms/.local/bin/weather --turn -1 ;; 3) notify-send 'Weather forecast' \"$(/home/ms/.local/bin/weather --facts)\" ;; esac; /home/ms/.local/bin/weather",	1,	12},
 	{"\004VPN \001",	"case ${BUTTON:-} in 1) if ip link show mvd >/dev/null 2>&1; then sudo -n wg-quick down mvd; else sudo -n wg-quick up mvd; fi >/dev/null 2>&1 ;; esac; if ip link show mvd >/dev/null 2>&1; then printf '\\005ON\\001'; else echo OFF; fi",	5,	13},
 	{"\004CPU \001",	"/home/ms/.local/bin/cpu",					5,		14},
 	{"\004VOL \001",	"/home/ms/.local/bin/volume",					1,		10},
@@ -21,8 +25,7 @@ static const Block blocks[] = {
 	 * mis-aimed wheel tick lands on the same block. CPU (signal 14) steps the fan floor,
 	 * so the padding matters now. */
 	{"\004BRI \001",	"/home/ms/.local/bin/brightness",				0,		11},
-	{"",	"case ${BUTTON:-} in 1) /home/ms/.local/bin/weather --ack ;; 4) /home/ms/.local/bin/weather --turn 1 ;; 5) /home/ms/.local/bin/weather --turn -1 ;; 3) notify-send 'Weather forecast' \"$(/home/ms/.local/bin/weather --facts)\" ;; esac; /home/ms/.local/bin/weather",	1,	12},
-	{"",	"LC_TIME=pl_PL.utf8 date '+%a %d.%m %H:%M'",			1,		0},
+	{"",	"LC_TIME=pl_PL.utf8 date '+%a %d.%m %H:%M:%S'",			1,		0},
 };
 static char delim[] = "  ";
 static unsigned int delimLen = 5;
