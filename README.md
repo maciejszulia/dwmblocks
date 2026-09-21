@@ -1,15 +1,50 @@
-# dwmblocks
-Modular status bar for dwm written in c.
-# usage
-To use dwmblocks first run 'make' and then install it with 'sudo make install'.
-After that you can put dwmblocks in your xinitrc or other startup script to have it start with dwm.
-# modifying blocks
-The statusbar is made from text output from commandline programs.
-Blocks are added and removed by editing the blocks.h header file.
-By default the blocks.h header file is created the first time you run make which copies the default config from blocks.def.h.
-This is so you can edit your status bar commands and they will not get overwritten in a future update.
-# patches
-Here are some patches to dwmblocks that add features that I either don't want to merge in, or that require a dwm patch to work.
-I do not maintain these but I will take pull requests to update them.
-<br>
-<a href=https://gist.github.com/IGeraGera/e4a5583b91b3eec2e81fdceb44dea717>dwmblocks-statuscmd-b6b0be4.diff</a>
+# dwmblocks: clickable, folding status bar
+
+A local fork of torrinfail's C status-bar program for dwm. It runs the commands
+in [blocks.h](blocks.h), combines their first output lines and publishes the
+result to the X root window.
+
+## Local changes
+
+- Blocks with a signal number carry click markers. Queued signals at
+  `SIGRTMIN + number` pass the mouse button to the command as `BUTTON`.
+- A block with no command emits `0x1f`, separating the hover-only part from the
+  always-visible part in the companion dwm fork.
+- Real-time signals are masked during normal status rebuilding; interrupted
+  sleeps resume so clicks do not advance the refresh counter early.
+
+Commands still run sequentially. A slow command can delay the entire bar;
+[ping-artix](https://gitlab.com/maciejszulia/dwm-bar-scripts/-/blob/main/ping-artix)
+uses a background measurement and a cached result for that reason.
+
+## Build and configure
+
+Requires a C compiler, make and Xlib development files.
+
+```sh
+make
+```
+
+This checkout **tracks `blocks.h`**. `make` copies `blocks.def.h` only when
+`blocks.h` is absent; it does not replace the tracked local configuration.
+The two files have different layouts. Review the commands before running
+`./dwmblocks` inside an X session. `make install` installs to `/usr/local/bin`
+by default; `PREFIX` and `DESTDIR` can be overridden.
+
+| Dependency | Why it is needed |
+|---|---|
+| [Companion dwm fork](https://gitlab.com/maciejszulia/dwm) | Renders colour/fold markers and sends per-block click signals. |
+| [Bar scripts](https://gitlab.com/maciejszulia/dwm-bar-scripts) | Usage, weather, volume, brightness, GPU and ping commands; paths currently use `/home/ms/.local/bin`. |
+| `cpu` helper | Referenced by the tracked `blocks.h`, but **not included** in either this repository or the bar-scripts snapshot. Supply it or remove that block. |
+| Host tools and hardware | `free`, `df`, `ip`, `notify-send`, `wg-quick`, battery sysfs, the Polish locale and the scripts' own dependencies. |
+
+The VPN block's left click runs `sudo -n wg-quick up/down mvd`; it is an action,
+not just a status display. Adapt or remove host-specific blocks before use.
+The `-p` option still executes the configured commands and requires X in the
+normal build, so it is not an isolated test mode.
+
+## Licence
+
+Based on torrinfail's dwmblocks. Preserve the author attribution and
+[ISC licence](LICENSE). No automated test suite is included; compilation alone
+does not validate the local commands or interaction with dwm.
