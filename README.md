@@ -35,11 +35,13 @@ by default; `PREFIX` and `DESTDIR` can be overridden.
 |---|---|
 | [Companion dwm fork](https://gitlab.com/maciejszulia/dwm) | Renders colour/fold markers and sends per-block click signals. |
 | [Bar scripts](https://gitlab.com/maciejszulia/dwm-bar-scripts) | Usage, weather, volume, brightness, GPU and ping commands; paths currently use `/home/ms/.local/bin`. |
-| `cpu` helper | Referenced by the tracked `blocks.h`, but **not included** in either this repository or the bar-scripts snapshot. Supply it or remove that block. |
+| [cpu helper](https://gitlab.com/maciejszulia/dwm-bar-scripts/-/blob/main/cpu) | CPU and optional ThinkPad fan readings. Needs compatible Linux proc/sysfs data; the current CPU block has signal `0`, so it receives no mouse actions. |
 | Host tools and hardware | `free`, `df`, `ip`, `notify-send`, `wg-quick`, battery sysfs, the Polish locale and the scripts' own dependencies. |
 
 The VPN block's left click runs `sudo -n wg-quick up/down mvd`; it is an action,
 not just a status display. Adapt or remove host-specific blocks before use.
+The CPU helper supports optional fan requests if wired for clicks, but their
+consumer (`wiatrak`) is a separate service, not installed by these repositories.
 The `-p` option still executes the configured commands and requires X in the
 normal build, so it is not an isolated test mode.
 
