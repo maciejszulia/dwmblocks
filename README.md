@@ -1,8 +1,12 @@
 # dwmblocks: clickable, folding status bar
 
+[Polski](README.pl.md)
+
 A local fork of torrinfail's C status-bar program for dwm. It runs the commands
 in [blocks.h](blocks.h), combines their first output lines and publishes the
 result to the X root window.
+
+![Four repositories make one desktop. Scripts feed dwmblocks, dwmblocks writes the status text, dwm draws it and sends each click back as a signal; st is the terminal.](docs/diagrams/desktop-stack.svg)
 
 ## Local changes
 
