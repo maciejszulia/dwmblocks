@@ -54,3 +54,7 @@ normal build, so it is not an isolated test mode.
 Based on torrinfail's dwmblocks. Preserve the author attribution and
 [ISC licence](LICENSE). No automated test suite is included; compilation alone
 does not validate the local commands or interaction with dwm.
+
+## Documentation
+
+- [Architecture (arc42, diagrams, ADRs)](docs/architecture/README.md)
