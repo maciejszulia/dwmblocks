@@ -12,7 +12,8 @@ static const Block blocks[] = {
 	/* ponytail: a block with no command is the \037 marker, i.e. the fold line */
 	{"", NULL, 0, 0},
 
-	/* --- always on the bar; owner 27.11.2026: two sections only, power and weather (with the 3-day forecast) --- */
+	/* --- always on the bar; owner 27.11.2026: two sections only, power and weather; the forecast leads the weather
+	 * section and the fact's padding trails it, so no gap splits the section --- */
 	{"\004VPN \001",	"case ${BUTTON:-} in 1) if ip link show mvd >/dev/null 2>&1; then sudo -n wg-quick down mvd; else sudo -n wg-quick up mvd; fi >/dev/null 2>&1 ;; esac; if ip link show mvd >/dev/null 2>&1; then printf '\\005ON\\001'; else echo OFF; fi",	5,	16},
 	{"\004CPU \001",	"/home/ms/.local/bin/cpu",					5,		0},	/* fan clicks off for now; 17 restores them */
 	{"\004GPU \001",	"/home/ms/.local/bin/gpu",					5,		0},
@@ -22,7 +23,7 @@ static const Block blocks[] = {
 	 * hidden) steps the fan floor. Signals start at 9: bytes 6-8 are the forecast colours in dwm. */
 	{"\004BRI \001",	"/home/ms/.local/bin/brightness",				0,		14},
 	{"",	"case ${BUTTON:-} in 3) notify-send 'Power' \"$(/home/ms/.local/bin/energy facts | tr -d '\\001-\\010')\" ;; esac; /home/ms/.local/bin/energy bar",	5,	18},
-	{"",	"case ${BUTTON:-} in 1) /home/ms/.local/bin/weather --ack ;; 4) /home/ms/.local/bin/weather --turn 1 ;; 5) /home/ms/.local/bin/weather --turn -1 ;; 3) notify-send 'Weather forecast' \"$(/home/ms/.local/bin/weather --facts)\" ;; esac; printf '%s  %s\\n' \"$(/home/ms/.local/bin/weather)\" \"$(/home/ms/.local/bin/forecast3)\"",	1,	15},
+	{"",	"case ${BUTTON:-} in 1) /home/ms/.local/bin/weather --ack ;; 4) /home/ms/.local/bin/weather --turn 1 ;; 5) /home/ms/.local/bin/weather --turn -1 ;; 3) notify-send 'Weather forecast' \"$(/home/ms/.local/bin/weather --facts)\" ;; esac; printf '%s  %s\\n' \"$(/home/ms/.local/bin/forecast3)\" \"$(/home/ms/.local/bin/weather)\"",	1,	15},
 	{"",	"LC_TIME=pl_PL.utf8 date '+%a %d.%m %H:%M:%S'",			1,		0},
 };
 static char delim[] = "  ";
