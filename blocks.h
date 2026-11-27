@@ -13,14 +13,14 @@ static const Block blocks[] = {
 	{"", NULL, 0, 0},
 
 	/* --- always on the bar --- */
-	{"\004VPN \001",	"case ${BUTTON:-} in 1) if ip link show mvd >/dev/null 2>&1; then sudo -n wg-quick down mvd; else sudo -n wg-quick up mvd; fi >/dev/null 2>&1 ;; esac; if ip link show mvd >/dev/null 2>&1; then printf '\\005ON\\001'; else echo OFF; fi",	5,	16},
-	{"\004CPU \001",	"/home/ms/.local/bin/cpu",					5,		0},	/* fan clicks off for now; 17 restores them */
-	{"\004GPU \001",	"/home/ms/.local/bin/gpu",					5,		0},
-	{"\004VOL \001",	"/home/ms/.local/bin/volume",					1,		13},
+	{"\004󰖂 \001",	"case ${BUTTON:-} in 1) if ip link show mvd >/dev/null 2>&1; then sudo -n wg-quick down mvd; else sudo -n wg-quick up mvd; fi >/dev/null 2>&1 ;; esac; if ip link show mvd >/dev/null 2>&1; then printf '\\005ON\\001'; else echo OFF; fi",	5,	16},
+	{"\004 \001",	"/home/ms/.local/bin/cpu",					5,		0},	/* fan clicks off for now; 17 restores them */
+	{"\004󰢮 \001",	"/home/ms/.local/bin/gpu",					5,		0},
+	{"\004󰕾 \001",	"/home/ms/.local/bin/volume",					1,		13},
 	/* ponytail: BRI sits right of VOL so VOL grows leftwards into CPU; VOL/BRI print 4 columns so a
 	 * mis-aimed wheel tick lands on the same block. CPU (signal 17, off while the fan is
 	 * hidden) steps the fan floor. Signals start at 9: bytes 6-8 are the forecast colours in dwm. */
-	{"\004BRI \001",	"/home/ms/.local/bin/brightness",				0,		14},
+	{"\004󰃠 \001",	"/home/ms/.local/bin/brightness",				0,		14},
 	{"",	"case ${BUTTON:-} in 1) /home/ms/.local/bin/weather --ack ;; 4) /home/ms/.local/bin/weather --turn 1 ;; 5) /home/ms/.local/bin/weather --turn -1 ;; 3) notify-send 'Weather forecast' \"$(/home/ms/.local/bin/weather --facts)\" ;; esac; /home/ms/.local/bin/weather",	1,	15},
 	{"",	"/home/ms/.local/bin/forecast3",				600,		0},
 	{"",	"LC_TIME=pl_PL.utf8 date '+%a %d.%m %H:%M:%S'",			1,		0},
