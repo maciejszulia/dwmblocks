@@ -21,6 +21,7 @@ static const Block blocks[] = {
 	 * mis-aimed wheel tick lands on the same block. CPU (signal 17, off while the fan is
 	 * hidden) steps the fan floor. Signals start at 9: bytes 6-8 are the forecast colours in dwm. */
 	{"\004BRI \001",	"/home/ms/.local/bin/brightness",				0,		14},
+	{"",	"case ${BUTTON:-} in 3) notify-send 'Power' \"$(/home/ms/.local/bin/energy facts | tr -d '\\001-\\010')\" ;; esac; /home/ms/.local/bin/energy bar",	5,	18},
 	{"",	"case ${BUTTON:-} in 1) /home/ms/.local/bin/weather --ack ;; 4) /home/ms/.local/bin/weather --turn 1 ;; 5) /home/ms/.local/bin/weather --turn -1 ;; 3) notify-send 'Weather forecast' \"$(/home/ms/.local/bin/weather --facts)\" ;; esac; /home/ms/.local/bin/weather",	1,	15},
 	{"",	"/home/ms/.local/bin/forecast3",				600,		0},
 	{"",	"LC_TIME=pl_PL.utf8 date '+%a %d.%m %H:%M:%S'",			1,		0},
